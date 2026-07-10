@@ -6,11 +6,7 @@ import '../../../../core/theme/app_radius.dart';
 /// Phone number field with a fixed "+91" country-code chip, matching the
 /// reference design (a real country picker is out of scope for v1).
 class PhoneInputField extends StatelessWidget {
-  const PhoneInputField({
-    super.key,
-    required this.controller,
-    this.errorText,
-  });
+  const PhoneInputField({super.key, required this.controller, this.errorText});
 
   final TextEditingController controller;
   final String? errorText;
@@ -34,12 +30,20 @@ class PhoneInputField extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHigh,
-                  borderRadius: BorderRadius.horizontal(left: AppRadius.mdRadius.topLeft),
+                  borderRadius: BorderRadius.horizontal(
+                    left: AppRadius.mdRadius.topLeft,
+                  ),
                 ),
-                child: Text('+91', style: Theme.of(context).textTheme.bodyMedium),
+                child: Text(
+                  '+88',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
               Expanded(
                 child: TextField(
@@ -48,9 +52,12 @@ class PhoneInputField extends StatelessWidget {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   style: Theme.of(context).textTheme.bodyMedium,
                   decoration: const InputDecoration(
-                    hintText: '9876543210',
+                    hintText: '018*******',
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
               ),
@@ -61,7 +68,9 @@ class PhoneInputField extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             errorText!,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.error),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: scheme.error),
           ),
         ],
       ],

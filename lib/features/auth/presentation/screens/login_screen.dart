@@ -51,88 +51,20 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: scheme.primaryContainer,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.mosque,
-                      color: scheme.onPrimaryContainer,
-                      size: 32,
-                    ),
-                  ),
+                  _Logo(scheme: scheme),
                   Text(
                     'SalatTime',
                     style: textTheme.displayLarge?.copyWith(fontSize: 34),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Enter your sanctuary of prayer',
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
+
                   const SizedBox(height: AppSpacing.md),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: scheme.surfaceContainerLowest,
-                      borderRadius: AppRadius.cardRadius,
-                      border: Border.all(
-                        color: scheme.outlineVariant.withValues(alpha: 0.3),
-                      ),
-                      boxShadow: AppShadows.sunken,
-                    ),
-                    child: Column(
-                      children: [
-                        PhoneInputField(
-                          controller: _phoneController,
-                          errorText: _validationError,
-                        ),
-                        if (auth.errorMessage != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            auth.errorMessage!,
-                            style: textTheme.labelSmall?.copyWith(
-                              color: scheme.error,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: AppSpacing.sm),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: auth.isSubmitting
-                                ? null
-                                : () => _submit(auth),
-                            child: auth.isSubmitting
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Text('Send OTP'),
-                                      SizedBox(width: 8),
-                                      Icon(Icons.arrow_forward, size: 18),
-                                    ],
-                                  ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                      ],
-                    ),
+                  _LoginCard(
+                    scheme: scheme,
+                    textTheme: textTheme,
+                    auth: auth,
+                    phoneController: _phoneController,
+                    validationError: _validationError,
+                    onSubmit: () => _submit(auth),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
@@ -145,6 +77,111 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _Logo extends StatelessWidget {
+  const _Logo({required this.scheme});
+
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 64,
+      height: 64,
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(Icons.mosque, color: scheme.onPrimaryContainer, size: 32),
+    );
+  }
+}
+
+class _LoginCard extends StatelessWidget {
+  const _LoginCard({
+    required this.scheme,
+    required this.textTheme,
+    required this.auth,
+    required this.phoneController,
+    required this.validationError,
+    required this.onSubmit,
+  });
+
+  final ColorScheme scheme;
+  final TextTheme textTheme;
+  final AuthProvider auth;
+  final TextEditingController phoneController;
+  final String? validationError;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: AppRadius.cardRadius,
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.3)),
+        boxShadow: AppShadows.sunken,
+      ),
+      child: Column(
+        children: [
+          PhoneInputField(
+            controller: phoneController,
+            errorText: validationError,
+          ),
+          if (auth.errorMessage != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              auth.errorMessage!,
+              style: textTheme.labelSmall?.copyWith(color: scheme.error),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.sm),
+          _SubmitButton(isSubmitting: auth.isSubmitting, onPressed: onSubmit),
+          const SizedBox(height: AppSpacing.sm),
+        ],
+      ),
+    );
+  }
+}
+
+class _SubmitButton extends StatelessWidget {
+  const _SubmitButton({required this.isSubmitting, required this.onPressed});
+
+  final bool isSubmitting;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: isSubmitting ? null : onPressed,
+        child: isSubmitting
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Subscribe and Login'),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
+              ),
       ),
     );
   }
