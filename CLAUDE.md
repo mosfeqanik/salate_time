@@ -11,7 +11,7 @@ flutter run -d chrome            # run on web
 flutter run -d macos             # run on macOS desktop
 flutter run -d <device-id>       # run on a specific device (see `flutter devices`)
 flutter test                     # run all tests
-flutter test test/widget_test.dart --plain-name "Counter increments smoke test"  # run a single test
+flutter test test/widget_test.dart --plain-name "Splash screen shows the brand name and a progress indicator"  # run a single test
 flutter analyze                  # static analysis (uses flutter_lints, see analysis_options.yaml)
 ```
 
@@ -27,9 +27,19 @@ mkdocs build                     # outputs static site to site/
 
 This is a Flutter app targeting Android, iOS, web, macOS, Linux, and Windows (`android/`, `ios/`, `web/`, `macos/`, `linux/`, `windows/` are the standard Flutter-generated platform shells; don't hand-edit them except for platform config like permissions, bundle IDs, icons, entitlements).
 
-`lib/main.dart` is currently the sole source file and is still the unmodified `flutter create` counter template: `main()` boots `MyApp` (`StatelessWidget`, sets up `MaterialApp`), which shows `MyHomePage` (`StatefulWidget`, a counter screen with a FAB). There is no routing, state management library, or data layer yet — as those get introduced, record the decision and reasoning in `docs/architecture.md`, not just in code.
+**SalatTime** is organized feature-first under `lib/`: `main.dart` builds shared services/repositories and wires a `MultiProvider` root; `app.dart` sets up `MaterialApp.router` with light/dark theme + `go_router`. `core/` holds cross-feature code (`theme/`, `router/`, `network/` — a shared `Dio` client, `storage/` — a `SharedPreferences` wrapper). `features/` has one folder per feature (`splash`, `auth`, `prayer_times`, `settings`, `shell`), each shaped as `data/` (models + API client + one concrete repository, no abstract interface/domain layer — see `docs/architecture.md` "Layering") and `presentation/` (`providers/` for `ChangeNotifier`s, `screens/`, `widgets/`).
+
+Key decisions — state management is **Provider** (not Riverpod/Bloc), routing is **go_router** with auth-gated redirects, theming is built from `DESIGN.md`'s exact hex/typography tokens (light) with an algorithmically-derived dark scheme, and prayer times come from the real **Aladhan public API** via Dio. Login is a **mock OTP flow** (no real SMS backend). Full rationale for each of these, plus an explicit "not yet built" list (geolocation, real notifications/adhan audio, Qibla/Dua tabs, etc.), lives in `docs/architecture.md` — read it before making structural changes, and update it in the same change whenever a decision here gets revisited.
 
 Project documentation lives in `docs/` (MkDocs Material, config in `mkdocs.yml`) and is meant to be kept current alongside the code — update the relevant page in the same change that adds or alters behavior. See `docs/contributing.md` for the convention.
+
+### Design tokens
+
+`DESIGN.md` at the repo root is the source of truth for colors, typography, spacing, and shape — it's what `lib/core/theme/` is generated from. Update it first if the design changes, then propagate to the theme files.
+
+### Commits
+
+A project skill at `.claude/skills/commit-push/SKILL.md` handles `/commit-push` (stage → commit → confirm → push). Commit subjects follow [Conventional Commits](https://www.conventionalcommits.org/) (`type(scope): description`) going forward — don't match the freeform style of commits made before that convention was adopted.
 
 ### Android build note
 

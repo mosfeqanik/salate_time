@@ -16,7 +16,11 @@ Use this skill only when the user explicitly invokes `/commit-push`.
 1. Run in parallel: `git status` (never `-uall`), `git diff` (staged + unstaged), and `git log --oneline -10` to learn this repo's commit message style.
 2. If there is nothing to commit (no staged changes, no unstaged changes, no untracked files worth adding), say so and stop — do not create an empty commit.
 3. Stage relevant files by name (not `git add -A`/`.`). If a broad add is genuinely appropriate, run `git status` afterward and check the file list — flag anything that looks like it could contain secrets (`.env`, credentials, keys) before proceeding, even if the filename looks innocuous.
-4. Draft a concise (1-2 sentence) commit message focused on *why*, not *what*, matching the tone/format of recent commits from `git log`.
+4. Draft a [Conventional Commits](https://www.conventionalcommits.org/) message: `<type>[optional scope]: <description>`, focused on *why*, not *what*.
+   - `type` is one of: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. Pick the one that matches the dominant nature of the change (a docs-only change is `docs`, a dependency/tooling change is `build` or `chore`, a behavior change is `feat`/`fix`, etc.).
+   - `scope` is optional, short, and only added when it clarifies which area changed (e.g. `feat(auth): ...`) — omit it if the change spans the whole repo or a scope would be noise.
+   - `description` is lowercase, imperative mood, no trailing period, and stays to 1 line unless the change genuinely needs a body — if so, add a blank line then 1-2 sentences of body explaining *why*.
+   - Use `!` after type/scope (e.g. `feat!:`) or a `BREAKING CHANGE:` footer only for an actual breaking change — don't reach for it otherwise.
 5. Create the commit with the message via a HEREDOC, ending with:
    ```
    Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
@@ -30,4 +34,4 @@ Use this skill only when the user explicitly invokes `/commit-push`.
 ## Notes
 
 - Only commit files relevant to the task at hand — don't sweep in unrelated changes.
-- This repo's convention (see `git log`): short, imperative or descriptive subject lines explaining the reason for the change, not a changelog of what was touched.
+- Commit subjects follow Conventional Commits (`type(scope): description`) — see step 4. Prior commits in this repo predate this convention; don't match their format, follow Conventional Commits going forward instead.
