@@ -47,9 +47,13 @@ Each feature under `features/` follows the same shape: `data/` (models + API cli
 
 Each feature has a concrete `data/` repository (no abstract repository interface) and the DTO doubles as the UI-facing entity (no separate domain layer). This is proportionate for a single real data source with no requirement yet to swap implementations or test against fakes-via-interface — a concrete repository class is still kept (rather than calling Dio straight from a provider) so JSON parsing/error mapping stays out of UI-facing state code. Revisit if a second data source or serious unit-test coverage arrives.
 
-### Auth: mock OTP, persisted locally
+### Auth: real OTP backend (send + verify), persisted locally
 
-`features/auth/data/auth_repository.dart` simulates sending an OTP (delay, then always succeeds) — there is **no real SMS/backend integration**. Auth status persists via `SharedPreferences` so the user isn't logged out every restart. Swapping in a real backend later means replacing `AuthRepository`'s implementation behind the same `AuthProvider` call sites.
+`features/auth/data/auth_api_client.dart` calls a real PHP backend at `https://www.bdappsdigitalapps.com/mosfeqanik/` (a second `Dio` instance, separate from the Aladhan one — wired in `main.dart`): `POST send_otp.php` and `POST verify_otp.php`, both `application/x-www-form-urlencoded` (required — the PHP reads `$_POST`, and Dio's `FormData` sends `multipart/form-data` instead, a different wire format, so every call sets `Options(contentType: Headers.formUrlEncodedContentType)` explicitly). The field is `user_mobile`, the local 11-digit BD number as typed (no transformation, no country code). Both endpoints return `{"success": bool, "message"?: string, "referenceNo"?: string, ...}`; a `success: false` response's `message` is surfaced to the user as-is.
+
+**Unconfirmed:** the verify request's field name for the code itself (`otp_code` in `auth_api_client.dart`) was never confirmed against the real `verify_otp.php` script — if verification always fails with a generic message, check this first. Also unconfirmed: whether this backend sends CORS headers, so Flutter web may fail here even though Android/iOS work (Dio's native stack isn't subject to browser CORS) — if hit, the fix is server-side, not a client workaround.
+
+`AuthRepository.sendOtp` only calls the API — it does not persist anything (sending an OTP isn't authentication). `AuthRepository.verifyOtp` persists via `SharedPreferences` (`LocalStorageService.setAuthenticated`) only on a successful verify. `AuthProvider` models the login screen's two steps with a separate `LoginStep` enum (`enterPhone`/`enterCode`) rather than adding a third `AuthStatus` value, since the router's redirect logic only ever branches on `authenticated`/`unauthenticated` and shouldn't need to know about the in-between "OTP sent, awaiting code" state.
 
 ### City selection: hardcoded list, no geolocation
 
@@ -63,7 +67,8 @@ Each feature has a concrete `data/` repository (no abstract repository interface
 
 - Device geolocation for auto-detecting the user's city.
 - Free-text city search (currently a fixed list only).
-- Real OTP/SMS backend (or Firebase Phone Auth) behind `AuthRepository`.
+- Confirming the verify-OTP code field name and this backend's CORS headers against the real server (see "Auth" above — both currently unconfirmed assumptions).
+- A resend cooldown timer, and OTP length validation (currently accepts any non-empty code).
 - Actual notification delivery and adhan audio playback (Settings toggles currently only persist a preference).
 - Qibla and Dua tabs (currently `ComingSoonTab` placeholders in `features/shell/`).
 - Bundled Google Fonts as local assets (currently fetched at runtime).

@@ -52,7 +52,7 @@ class PhoneInputField extends StatelessWidget {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   style: Theme.of(context).textTheme.bodyMedium,
                   decoration: const InputDecoration(
-                    hintText: '018*******',
+                    hintText: '01*********',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16,

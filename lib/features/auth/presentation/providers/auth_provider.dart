@@ -1,8 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 import '../../data/auth_repository.dart';
+import '../../data/models/send_otp_response.dart';
+import '../../data/models/verify_otp_response.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
+
+/// Which card the login screen shows. Deliberately separate from
+/// [AuthStatus] — the router only ever branches on [AuthStatus], so adding
+/// an in-between "awaiting code" value there would mean touching redirect
+/// logic for no benefit.
+enum LoginStep { enterPhone, enterCode }
 
 /// Holds auth state for the whole app. `status` starts as [AuthStatus.unknown]
 /// while the persisted flag is being restored; the router's redirect logic
@@ -15,9 +23,33 @@ class AuthProvider extends ChangeNotifier {
   final AuthRepository _repository;
 
   AuthStatus status = AuthStatus.unknown;
+  LoginStep loginStep = LoginStep.enterPhone;
+
+  /// The verified, persisted number — only set once `verifyOtp` succeeds.
   String? phoneNumber;
+
+  /// The number an OTP was just sent to, held in memory only until verified.
+  String? pendingPhoneNumber;
+
+  /// The reference number returned by the last successful `sendOtp`. The
+  /// user must echo this back when verifying the OTP, so it lives on the
+  /// provider (not storage) until verification succeeds or the user backs
+  /// out of the OTP screen.
+  String? pendingReferenceNo;
+
   bool isSubmitting = false;
   String? errorMessage;
+
+  /// The most recent server response for a `sendOtp` call. Populated on
+  /// every attempt regardless of branch, so the UI can read
+  /// `statusCode` (e.g. `E1853`), `statusDetail`, and `subscriberId`.
+  SendOtpResponse? lastSendOtpResponse;
+
+  /// The most recent server response for a `verifyOtp` call. Populated on
+  /// every attempt regardless of branch, so the UI can read `statusCode`
+  /// (`"S1000"` for success), `statusDetail`, `subscriptionStatus`, and
+  /// `subscriberId`.
+  VerifyOtpResponse? lastVerifyOtpResponse;
 
   Future<void> _restore() async {
     final authenticated = await _repository.isAuthenticated();
@@ -32,10 +64,24 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.sendOtpAndAuthenticate(phoneNumber);
-      this.phoneNumber = phoneNumber;
-      status = AuthStatus.authenticated;
+      final result = await _repository.sendOtp(phoneNumber);
+      lastSendOtpResponse = result.response;
+      switch (result) {
+        case SendOtpSuccess():
+          pendingPhoneNumber = phoneNumber;
+          pendingReferenceNo = result.referenceNo;
+          loginStep = LoginStep.enterCode;
+        case SendOtpFailure():
+          pendingReferenceNo = null;
+          errorMessage = result.response.message ?? 'Failed to send code.';
+      }
+    } on AuthFailure catch (e) {
+      lastSendOtpResponse = null;
+      pendingReferenceNo = null;
+      errorMessage = e.message;
     } catch (_) {
+      lastSendOtpResponse = null;
+      pendingReferenceNo = null;
       errorMessage = 'Something went wrong. Please try again.';
     } finally {
       isSubmitting = false;
@@ -43,9 +89,62 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> resendOtp() async {
+    final phone = pendingPhoneNumber;
+    if (phone == null) return;
+    await sendOtp(phone);
+  }
+
+  Future<void> verifyOtp(String code) async {
+    final referenceNo = pendingReferenceNo;
+    if (referenceNo == null) return;
+
+    isSubmitting = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final result = await _repository.verifyOtp(
+        referenceNo: referenceNo,
+        code: code,
+      );
+      lastVerifyOtpResponse = result.response;
+      switch (result) {
+        case VerifyOtpSuccess():
+          // The repository already persisted via LocalStorageService; mirror
+          // that into in-memory state so the router picks up the change.
+          phoneNumber = result.response.persistedPhoneNumber ?? phoneNumber;
+          pendingPhoneNumber = null;
+          pendingReferenceNo = null;
+          status = AuthStatus.authenticated;
+        case VerifyOtpFailure():
+          errorMessage =
+              result.response.statusDetail ?? 'Invalid code. Please try again.';
+      }
+    } on AuthFailure catch (e) {
+      lastVerifyOtpResponse = null;
+      errorMessage = e.message;
+    } catch (_) {
+      lastVerifyOtpResponse = null;
+      errorMessage = 'Something went wrong. Please try again.';
+    } finally {
+      isSubmitting = false;
+      notifyListeners();
+    }
+  }
+
+  void backToPhoneEntry() {
+    loginStep = LoginStep.enterPhone;
+    pendingPhoneNumber = null;
+    errorMessage = null;
+    notifyListeners();
+  }
+
   Future<void> logout() async {
     await _repository.logout();
     phoneNumber = null;
+    pendingPhoneNumber = null;
+    loginStep = LoginStep.enterPhone;
     status = AuthStatus.unauthenticated;
     notifyListeners();
   }

@@ -1,17 +1,26 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:salate_time/core/storage/local_storage_service.dart';
+import 'package:salate_time/features/auth/data/auth_api_client.dart';
 import 'package:salate_time/features/auth/data/auth_repository.dart';
 import 'package:salate_time/features/auth/presentation/providers/auth_provider.dart';
 import 'package:salate_time/features/splash/presentation/screens/splash_screen.dart';
 
 void main() {
-  testWidgets('Splash screen shows the brand name and a progress indicator', (tester) async {
+  testWidgets('Splash screen shows the brand name and a progress indicator', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
-    final authProvider = AuthProvider(AuthRepository(LocalStorageService()));
+    // Never exercised by this test (it only pumps SplashScreen, which reads
+    // persisted status, not live auth) — just needs to exist to satisfy the
+    // constructor.
+    final authProvider = AuthProvider(
+      AuthRepository(LocalStorageService(), AuthApiClient(Dio())),
+    );
 
     await tester.pumpWidget(
       ChangeNotifierProvider<AuthProvider>.value(
