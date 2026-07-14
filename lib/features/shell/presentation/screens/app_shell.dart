@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../dua/presentation/screens/dua_list_screen.dart';
 import '../../../prayer_times/presentation/screens/home_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../widgets/coming_soon_tab.dart';
@@ -23,7 +24,7 @@ class _AppShellState extends State<AppShell> {
   static const _tabs = [
     HomeTab(),
     ComingSoonTab(title: 'Qibla', icon: Icons.explore),
-    ComingSoonTab(title: 'Dua', icon: Icons.menu_book),
+    DuaListScreen(),
     SettingsScreen(),
   ];
 

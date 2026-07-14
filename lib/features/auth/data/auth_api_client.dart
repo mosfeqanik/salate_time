@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 
 import 'models/send_otp_response.dart';
+import 'models/unsubscribe_response.dart';
 import 'models/verify_otp_response.dart';
 
-/// Calls the real OTP backend (send_otp.php / verify_otp.php). Both
-/// endpoints read PHP `$_POST`, so every request must be sent as
-/// `application/x-www-form-urlencoded` — NOT JSON, NOT multipart
+/// Calls the real OTP backend (send_otp.php / verify_otp.php /
+/// unsubscribe.php). All endpoints read PHP `$_POST`, so every request must
+/// be sent as `application/x-www-form-urlencoded` — NOT JSON, NOT multipart
 /// `FormData` (Dio hard-overwrites `FormData`'s content-type to
 /// `multipart/form-data`, a different wire format).
 class AuthApiClient {
@@ -45,6 +46,18 @@ class AuthApiClient {
     // callers can read statusCode/statusDetail/subscriberId instead of
     // getting only a thrown message string.
     return VerifyOtpResponse.fromJson(response.data!);
+  }
+
+  /// Tells the backend to unregister the given mobile number. Success is
+  /// signaled by `statusCode == "S1000"`; see [UnsubscribeResponse.isSuccess].
+  Future<UnsubscribeResponse> unsubscribe({required String userMobile}) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/unsubscribe.php',
+      data: {'user_mobile': userMobile},
+      options: _formEncoded,
+    );
+
+    return UnsubscribeResponse.fromJson(response.data!);
   }
 }
 

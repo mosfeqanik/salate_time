@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../core/storage/local_storage_service.dart';
 import 'auth_api_client.dart';
 import 'models/send_otp_response.dart';
+import 'models/unsubscribe_response.dart';
 import 'models/verify_otp_response.dart';
 
 /// Real OTP auth: sending a code and verifying it are two separate network
@@ -78,10 +79,26 @@ class AuthRepository {
     return 'Something went wrong. Please try again.';
   }
 
+  /// Tells the backend to unregister the given number. Best-effort: any
+  /// transport-level failure is swallowed so a flaky network never blocks
+  /// the user from logging out. Always returns the parsed response (or
+  /// `null` if the request never produced one), so callers can read
+  /// `statusCode` / `subscriptionStatus` regardless of branch.
+  Future<UnsubscribeResponse?> unsubscribe({required String phoneNumber}) async {
+    try {
+      return await _apiClient.unsubscribe(userMobile: phoneNumber);
+    } on DioException {
+      return null;
+    }
+  }
+
   Future<bool> isAuthenticated() => _storage.getIsAuthenticated();
 
   Future<String?> getPhoneNumber() => _storage.getPhoneNumber();
 
+  /// Clears locally persisted auth state. The unsubscribe API call is
+  /// handled separately by [AuthProvider.logout] / [unsubscribe] so the
+  /// order (network call → local clear) stays explicit at the call site.
   Future<void> logout() => _storage.clearAuthenticated();
 }
 

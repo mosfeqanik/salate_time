@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../data/auth_repository.dart';
 import '../../data/models/send_otp_response.dart';
+import '../../data/models/unsubscribe_response.dart';
 import '../../data/models/verify_otp_response.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
@@ -50,6 +51,12 @@ class AuthProvider extends ChangeNotifier {
   /// (`"S1000"` for success), `statusDetail`, `subscriptionStatus`, and
   /// `subscriberId`.
   VerifyOtpResponse? lastVerifyOtpResponse;
+
+  /// The most recent server response for an `unsubscribe` call (fired
+  /// during logout). `null` until the user logs out for the first time,
+  /// or if the backend was unreachable — in which case local logout still
+  /// succeeds (see [AuthRepository.unsubscribe]).
+  UnsubscribeResponse? lastUnsubscribeResponse;
 
   Future<void> _restore() async {
     final authenticated = await _repository.isAuthenticated();
@@ -145,7 +152,16 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+    // Tell the backend to unregister this number before clearing local
+    // state. The repository treats this as best-effort: a network failure
+    // returns null and local logout still completes, so the user is never
+    // stranded by a flaky connection.
+    final unsubscribeResult =
+        await _repository.unsubscribe(phoneNumber: phoneNumber ?? '');
+    lastUnsubscribeResponse = unsubscribeResult;
+
     await _repository.logout();
+
     phoneNumber = null;
     pendingPhoneNumber = null;
     loginStep = LoginStep.enterPhone;

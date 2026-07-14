@@ -80,14 +80,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     fontSize: 30,
                   ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Your Spiritual Companion',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.inversePrimary.withValues(alpha: 0.8),
-                    fontStyle: FontStyle.italic,
-                  ),
-            ),
             const SizedBox(height: 64),
             SizedBox(
               width: 144,

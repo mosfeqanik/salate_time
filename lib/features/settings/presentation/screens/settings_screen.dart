@@ -90,7 +90,7 @@ class SettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'DEVOTED USER',
+                          'USER',
                           style: textTheme.labelSmall?.copyWith(
                             color: scheme.secondary,
                           ),
@@ -195,6 +195,7 @@ class SettingsScreen extends StatelessWidget {
                 border: Border.all(color: scheme.error.withValues(alpha: 0.3)),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -221,8 +222,15 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       OutlinedButton.icon(
                         onPressed: () => context.read<AuthProvider>().logout(),
-                        icon: const Icon(Icons.logout, size: 18),
-                        label: const Text('Logout from Sanctuary'),
+                        icon: const Icon(
+                          Icons.logout,
+                          size: 18,
+                          color: Colors.red,
+                        ),
+                        label: const Text(
+                          'Logout and Unsubscribe',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ),
                     ],
                   ),
