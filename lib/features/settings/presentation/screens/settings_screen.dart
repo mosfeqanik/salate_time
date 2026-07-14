@@ -25,7 +25,10 @@ class SettingsScreen extends StatelessWidget {
           'All data will be permanently reset to factory defaults.',
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: scheme.error),
             onPressed: () => Navigator.of(context).pop(true),
@@ -68,13 +71,17 @@ class SettingsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: scheme.surfaceContainerLowest,
                 borderRadius: AppRadius.cardRadius,
-                border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: scheme.outlineVariant.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundColor: scheme.primaryContainer.withValues(alpha: 0.1),
+                    backgroundColor: scheme.primaryContainer.withValues(
+                      alpha: 0.1,
+                    ),
                     child: Icon(Icons.person, color: scheme.primaryContainer),
                   ),
                   const SizedBox(width: 16),
@@ -82,14 +89,17 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('DEVOTED USER', style: textTheme.labelSmall?.copyWith(color: scheme.secondary)),
                         Text(
-                          auth.phoneNumber ?? 'Not signed in',
-                          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+                          'DEVOTED USER',
+                          style: textTheme.labelSmall?.copyWith(
+                            color: scheme.secondary,
+                          ),
                         ),
                         Text(
-                          'Joined SalatTime sanctuary',
-                          style: textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                          auth.phoneNumber ?? 'Not signed in',
+                          style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -102,30 +112,46 @@ class SettingsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: scheme.surfaceContainerLowest,
                 borderRadius: AppRadius.cardRadius,
-                border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: scheme.outlineVariant.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 children: [
                   SwitchListTile(
-                    secondary: Icon(Icons.notifications_outlined, color: scheme.primaryContainer),
+                    secondary: Icon(
+                      Icons.notifications_outlined,
+                      color: scheme.primaryContainer,
+                    ),
                     title: const Text('Adhan Alerts'),
-                    subtitle: const Text('Notify when the prayer time arrives.'),
+                    subtitle: const Text(
+                      'Notify when the prayer time arrives.',
+                    ),
                     value: settings.notificationsEnabled,
-                    onChanged: (_) => context.read<SettingsProvider>().toggleNotifications(),
+                    onChanged: (_) =>
+                        context.read<SettingsProvider>().toggleNotifications(),
                   ),
                   const Divider(height: 1),
                   SwitchListTile(
-                    secondary: Icon(Icons.volume_up_outlined, color: scheme.primaryContainer),
+                    secondary: Icon(
+                      Icons.volume_up_outlined,
+                      color: scheme.primaryContainer,
+                    ),
                     title: const Text('Audio Signals'),
-                    subtitle: const Text('Enable gentle chimes and adhan recitations.'),
+                    subtitle: const Text(
+                      'Enable gentle chimes and adhan recitations.',
+                    ),
                     value: settings.soundEnabled,
-                    onChanged: (_) => context.read<SettingsProvider>().toggleSound(),
+                    onChanged: (_) =>
+                        context.read<SettingsProvider>().toggleSound(),
                   ),
                   const Divider(height: 1),
                   ListTile(
                     leading: Icon(Icons.public, color: scheme.primaryContainer),
                     title: const Text('Calculation Method'),
-                    subtitle: const Text('Convention used for calculating Fajr/Isha twilight angles.'),
+                    subtitle: const Text(
+                      'Convention used for calculating Fajr/Isha twilight angles.',
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -134,13 +160,26 @@ class SettingsScreen extends StatelessWidget {
                       isExpanded: true,
                       decoration: const InputDecoration(),
                       items: CalculationMethod.all
-                          .map((m) => DropdownMenuItem(value: m, child: Text(m.label, overflow: TextOverflow.ellipsis)))
+                          .map(
+                            (m) => DropdownMenuItem(
+                              value: m,
+                              child: Text(
+                                m.label,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          )
                           .toList(),
                       onChanged: (method) {
                         if (method == null) return;
-                        context.read<SettingsProvider>().setCalculationMethod(method);
+                        context.read<SettingsProvider>().setCalculationMethod(
+                          method,
+                        );
                         final city = context.read<CityProvider>().selected;
-                        context.read<PrayerTimesProvider>().loadTimings(city, method: method.id);
+                        context.read<PrayerTimesProvider>().loadTimings(
+                          city,
+                          method: method.id,
+                        );
                       },
                     ),
                   ),
@@ -158,17 +197,11 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.shield_outlined, color: scheme.error, size: 20),
-                      const SizedBox(width: 8),
-                      Text('Danger Zone', style: textTheme.labelLarge?.copyWith(color: scheme.error)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
                   Text(
                     'These actions are destructive and cannot be undone.',
-                    style: textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Wrap(
@@ -176,10 +209,15 @@ class SettingsScreen extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(foregroundColor: scheme.error, side: BorderSide(color: scheme.error.withValues(alpha: 0.4))),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: scheme.error,
+                          side: BorderSide(
+                            color: scheme.error.withValues(alpha: 0.4),
+                          ),
+                        ),
                         onPressed: () => _confirmReset(context),
                         icon: const Icon(Icons.restart_alt, size: 18),
-                        label: const Text('Reset App Data'),
+                        label: const Text('Uns App Data'),
                       ),
                       OutlinedButton.icon(
                         onPressed: () => context.read<AuthProvider>().logout(),

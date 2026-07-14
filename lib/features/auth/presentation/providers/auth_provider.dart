@@ -54,7 +54,9 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _restore() async {
     final authenticated = await _repository.isAuthenticated();
     phoneNumber = await _repository.getPhoneNumber();
-    status = authenticated ? AuthStatus.authenticated : AuthStatus.unauthenticated;
+    status = authenticated
+        ? AuthStatus.authenticated
+        : AuthStatus.unauthenticated;
     notifyListeners();
   }
 
@@ -97,7 +99,8 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> verifyOtp(String code) async {
     final referenceNo = pendingReferenceNo;
-    if (referenceNo == null) return;
+    final phone = pendingPhoneNumber;
+    if (referenceNo == null || phone == null) return;
 
     isSubmitting = true;
     errorMessage = null;
@@ -107,13 +110,14 @@ class AuthProvider extends ChangeNotifier {
       final result = await _repository.verifyOtp(
         referenceNo: referenceNo,
         code: code,
+        phoneNumber: phone,
       );
       lastVerifyOtpResponse = result.response;
       switch (result) {
         case VerifyOtpSuccess():
           // The repository already persisted via LocalStorageService; mirror
           // that into in-memory state so the router picks up the change.
-          phoneNumber = result.response.persistedPhoneNumber ?? phoneNumber;
+          phoneNumber = phone;
           pendingPhoneNumber = null;
           pendingReferenceNo = null;
           status = AuthStatus.authenticated;

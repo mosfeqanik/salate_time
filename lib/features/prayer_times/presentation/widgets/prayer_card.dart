@@ -42,12 +42,13 @@ class PrayerCard extends StatelessWidget {
         ),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             _prayerIcons[name] ?? Icons.access_time,
             color: isActive ? scheme.primaryContainer : scheme.outline,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             name.toUpperCase(),
             style: textTheme.labelSmall?.copyWith(
@@ -55,14 +56,14 @@ class PrayerCard extends StatelessWidget {
               fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(time, style: textTheme.headlineMedium?.copyWith(fontSize: 20)),
           if (sunrise != null) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text('Sunrise $sunrise', style: textTheme.labelSmall?.copyWith(color: scheme.outline)),
           ],
           if (isActive) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(

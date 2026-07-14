@@ -47,12 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
     auth.verifyOtp(code);
   }
 
-  void _changeNumber(AuthProvider auth) {
-    _codeController.clear();
-    setState(() => _validationError = null);
-    auth.backToPhoneEntry();
-  }
-
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -85,8 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       codeController: _codeController,
                       validationError: _validationError,
                       onVerify: () => _submitCode(auth),
-                      onResend: () => auth.resendOtp(),
-                      onChangeNumber: () => _changeNumber(auth),
                     )
                   else
                     _LoginCard(
@@ -124,7 +116,10 @@ class _Logo extends StatelessWidget {
       width: 64,
       height: 64,
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
+        shape: BoxShape.circle,
+      ),
       child: Icon(Icons.mosque, color: scheme.onPrimaryContainer, size: 32),
     );
   }
@@ -152,10 +147,22 @@ class _LoginCard extends StatelessWidget {
     return _CardShell(
       scheme: scheme,
       children: [
-        PhoneInputField(controller: phoneController, errorText: validationError),
-        if (auth.errorMessage != null) _ErrorText(message: auth.errorMessage!, textTheme: textTheme, scheme: scheme),
+        PhoneInputField(
+          controller: phoneController,
+          errorText: validationError,
+        ),
+        if (auth.errorMessage != null)
+          _ErrorText(
+            message: auth.errorMessage!,
+            textTheme: textTheme,
+            scheme: scheme,
+          ),
         const SizedBox(height: AppSpacing.sm),
-        _SubmitButton(isSubmitting: auth.isSubmitting, onPressed: onSubmit, label: 'Send OTP'),
+        _SubmitButton(
+          isSubmitting: auth.isSubmitting,
+          onPressed: onSubmit,
+          label: 'Send OTP',
+        ),
         const SizedBox(height: AppSpacing.sm),
       ],
     );
@@ -170,8 +177,6 @@ class _OtpCard extends StatelessWidget {
     required this.codeController,
     required this.validationError,
     required this.onVerify,
-    required this.onResend,
-    required this.onChangeNumber,
   });
 
   final ColorScheme scheme;
@@ -180,8 +185,6 @@ class _OtpCard extends StatelessWidget {
   final TextEditingController codeController;
   final String? validationError;
   final VoidCallback onVerify;
-  final VoidCallback onResend;
-  final VoidCallback onChangeNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -193,24 +196,23 @@ class _OtpCard extends StatelessWidget {
           style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
         ),
         const SizedBox(height: AppSpacing.sm),
-        OtpCodeInputField(controller: codeController, errorText: validationError),
-        if (auth.errorMessage != null) _ErrorText(message: auth.errorMessage!, textTheme: textTheme, scheme: scheme),
-        const SizedBox(height: AppSpacing.sm),
-        _SubmitButton(isSubmitting: auth.isSubmitting, onPressed: onVerify, label: 'Verify'),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton(
-              onPressed: auth.isSubmitting ? null : onChangeNumber,
-              child: const Text('Change number'),
-            ),
-            TextButton(
-              onPressed: auth.isSubmitting ? null : onResend,
-              child: const Text('Resend code'),
-            ),
-          ],
+        OtpCodeInputField(
+          controller: codeController,
+          errorText: validationError,
         ),
+        if (auth.errorMessage != null)
+          _ErrorText(
+            message: auth.errorMessage!,
+            textTheme: textTheme,
+            scheme: scheme,
+          ),
+        const SizedBox(height: AppSpacing.sm),
+        _SubmitButton(
+          isSubmitting: auth.isSubmitting,
+          onPressed: onVerify,
+          label: 'Verify',
+        ),
+        const SizedBox(height: AppSpacing.sm),
       ],
     );
   }
@@ -239,7 +241,11 @@ class _CardShell extends StatelessWidget {
 }
 
 class _ErrorText extends StatelessWidget {
-  const _ErrorText({required this.message, required this.textTheme, required this.scheme});
+  const _ErrorText({
+    required this.message,
+    required this.textTheme,
+    required this.scheme,
+  });
 
   final String message;
   final TextTheme textTheme;
@@ -258,7 +264,11 @@ class _ErrorText extends StatelessWidget {
 }
 
 class _SubmitButton extends StatelessWidget {
-  const _SubmitButton({required this.isSubmitting, required this.onPressed, required this.label});
+  const _SubmitButton({
+    required this.isSubmitting,
+    required this.onPressed,
+    required this.label,
+  });
 
   final bool isSubmitting;
   final VoidCallback onPressed;
@@ -274,7 +284,10 @@ class _SubmitButton extends StatelessWidget {
             ? const SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,

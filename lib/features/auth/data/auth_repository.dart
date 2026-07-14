@@ -40,6 +40,7 @@ class AuthRepository {
   Future<VerifyOtpResult> verifyOtp({
     required String referenceNo,
     required String code,
+    required String phoneNumber,
   }) async {
     try {
       final response = await _apiClient.verifyOtp(
@@ -47,10 +48,11 @@ class AuthRepository {
         code: code,
       );
       if (response.isSuccess) {
-        final phone = response.persistedPhoneNumber;
-        if (phone != null) {
-          await _storage.setAuthenticated(phoneNumber: phone);
-        }
+        // Persist the number the user actually entered (and that `sendOtp`
+        // was called with) — not `response.persistedPhoneNumber`, which is
+        // the server's `subscriberId` in a different format (country-code
+        // prefixed, no leading 0).
+        await _storage.setAuthenticated(phoneNumber: phoneNumber);
         return VerifyOtpSuccess(
           referenceNo: referenceNo,
           code: code,
@@ -122,10 +124,7 @@ class SendOtpSuccess extends SendOtpResult {
 /// Server returned `success: false` (e.g. `E1853` "Maximum OTP requests").
 /// The [response] still carries `statusCode`/`statusDetail`/`subscriberId`.
 class SendOtpFailure extends SendOtpResult {
-  const SendOtpFailure({
-    required super.phoneNumber,
-    required super.response,
-  });
+  const SendOtpFailure({required super.phoneNumber, required super.response});
 }
 
 /// Result of a `verifyOtp` call against [AuthRepository]. Carries the parsed
