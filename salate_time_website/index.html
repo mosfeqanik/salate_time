@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>সালাত টাইম — নামাজের সঠিক সময়সূচি</title>
+<meta name="description" content="সালাত টাইম — বাংলাদেশের জন্য নির্ভরযোগ্য নামাজের সময়সূচি, কিবলা দিক ও দৈনিক ইবাদতের সঙ্গী। প্রতিদিন মাত্র ২ টাকা।">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --surface:#fff8f5;
+    --surface-container-low:#faf2ee;
+    --surface-container:#f4ece8;
+    --surface-container-high:#eee7e3;
+    --white:#ffffff;
+    --on-surface:#1e1b19;
+    --on-surface-variant:#404944;
+    --outline:#707974;
+    --outline-variant:#bfc9c3;
+    --primary:#064e3b;
+    --primary-deep:#003527;
+    --on-primary:#ffffff;
+    --primary-container:#b0f0d6;
+    --primary-dim:#95d3ba;
+    --secondary:#9b4500;
+    --secondary-container:#fd8a42;
+    --gold:#b45309;
+    --gold-soft:#ffb68e;
+    --error-container:#ffdad6;
+    --shadow: 0 10px 30px rgba(6,78,59,.08);
+    --radius:1.5rem;
+    --radius-md:.75rem;
+    --radius-sm:.5rem;
+    --maxw:1160px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Noto Serif Bengali',serif;
+    color:var(--on-surface);
+    background:var(--surface);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.serif{font-family:'Noto Serif Bengali',serif;font-weight:600;line-height:1.35}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 28px;border-radius:999px;font-weight:600;font-size:16px;
+    cursor:pointer;border:none;transition:transform .15s ease,box-shadow .2s ease,background .2s ease;
+    font-family:'Noto Serif Bengali',serif;
+  }
+  .btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:0 6px 18px rgba(6,78,59,.25)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(6,78,59,.32)}
+  .btn-ghost{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}
+  .btn-ghost:hover{background:rgba(6,78,59,.06)}
+  .btn-gold{background:var(--secondary-container);color:#682c00}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(253,138,66,.4)}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:999px;
+    background:var(--primary-container);color:var(--primary-deep);font-weight:600;font-size:14px;
+  }
+  .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:13px;font-weight:600;color:var(--secondary)}
+
+  /* NAV */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,248,245,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--outline-variant)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Noto Serif Bengali',serif;font-weight:700;font-size:22px;color:var(--primary-deep)}
+  .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(140deg,var(--primary),var(--primary-deep));display:grid;place-items:center;color:#fff;box-shadow:0 4px 12px rgba(6,78,59,.3)}
+  .logo svg{width:22px;height:22px}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-weight:500;color:var(--on-surface-variant);font-size:15px}
+  .nav-links a:hover{color:var(--primary)}
+  .nav-cta{display:flex;gap:12px;align-items:center}
+  .menu-btn{display:none;background:none;border:none;cursor:pointer}
+
+  /* HERO */
+  .hero{position:relative;padding:70px 0 90px;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-160px;right:-160px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(149,211,186,.35),transparent 65%);z-index:0}
+  .hero::after{content:"";position:absolute;bottom:-140px;left:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(253,138,66,.16),transparent 65%);z-index:0}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .hero h1{font-size:52px;letter-spacing:-.01em;margin:20px 0 18px;color:var(--primary-deep)}
+  .hero h1 .accent{color:var(--secondary)}
+  .hero p.lead{font-size:19px;color:var(--on-surface-variant);max-width:520px;margin-bottom:28px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .charging{
+    display:flex;align-items:flex-start;gap:12px;background:var(--white);border:1px solid var(--outline-variant);
+    border-radius:var(--radius-md);padding:16px 18px;max-width:520px;box-shadow:var(--shadow);
+  }
+  .charging .tk{flex-shrink:0;width:46px;height:46px;border-radius:12px;background:var(--primary-container);color:var(--primary-deep);display:grid;place-items:center;font-family:'Noto Serif Bengali',serif;font-weight:700;font-size:20px}
+  .charging b{color:var(--primary-deep)}
+  .charging small{display:block;color:var(--on-surface-variant);font-size:13.5px;line-height:1.5}
+
+  /* PHONE MOCKUP */
+  .phone-wrap{display:grid;place-items:center;position:relative;gap:20px}
+  .phone{
+    width:290px;height:590px;border-radius:44px;background:var(--primary-deep);
+    box-shadow:0 30px 70px rgba(6,78,59,.35);position:relative;overflow:hidden;
+  }
+  .phone::before{content:"";position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:var(--primary-deep);border-radius:0 0 16px 16px;z-index:3}
+  .phone::after{
+    content:"";
+    position:absolute;
+    inset:18px;
+    border-radius:28px;
+    background-image:url('screenshot-home.png');
+    background-size:contain;
+    background-position:center center;
+    background-repeat:no-repeat;
+  
+  }
+  .screen{width:100%;height:100%;border-radius:34px;background:linear-gradient(180deg,#064e3b,#003527 60%);overflow:hidden;position:relative;color:#fff;padding:44px 20px 22px}
+  .screen .loc{font-size:13px;opacity:.8;display:flex;align-items:center;gap:6px}
+  .screen .next-label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary-dim);margin-top:22px}
+  .screen .next-name{font-family:'Noto Serif Bengali',serif;font-size:34px;font-weight:700;margin-top:4px}
+  .screen .next-time{font-family:'Noto Serif Bengali',serif;font-size:44px;font-weight:700;color:var(--gold-soft);line-height:1.1}
+  .screen .remain{font-size:13px;opacity:.85;margin-top:4px}
+  .prayer-list{margin-top:26px;background:rgba(255,255,255,.08);border-radius:20px;padding:8px}
+  .prow{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-radius:14px;font-size:15px}
+  .prow.active{background:var(--gold-soft);color:#4a2600;font-weight:600}
+  .prow .pn{font-family:'Noto Serif Bengali',serif}
+  .prow .pt{font-variant-numeric:tabular-nums;opacity:.9}
+  .prow.active .pt{opacity:1;font-weight:600}
+
+  .screenshot-stack{display:grid;gap:18px;justify-items:center}
+  .screenshot-card{width:220px;border-radius:28px;overflow:hidden;background:rgba(255,255,255,.98);box-shadow:0 25px 60px rgba(6,78,59,.15);border:1px solid rgba(255,255,255,.75)}
+  .screenshot-card img{display:block;width:100%;height:auto}
+
+  /* SECTION SHELL */
+  section.block{padding:84px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 52px}
+  .sec-head h2{font-size:36px;color:var(--primary-deep);margin:12px 0 12px}
+  .sec-head p{color:var(--on-surface-variant);font-size:17px}
+
+  /* FEATURES */
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .fgrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .fcard{background:var(--white);border:1px solid var(--outline-variant);border-radius:var(--radius);padding:28px 24px;transition:transform .2s ease,box-shadow .2s ease}
+  .fcard:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .fi{width:52px;height:52px;border-radius:14px;background:var(--primary-container);color:var(--primary-deep);display:grid;place-items:center;margin-bottom:18px}
+  .fi svg{width:26px;height:26px}
+  .fcard h3{font-size:19px;color:var(--primary-deep);margin-bottom:8px}
+  .fcard p{font-size:14.5px;color:var(--on-surface-variant)}
+
+  /* SUBSCRIPTION ACKNOWLEDGEMENT */
+  .sub{background:linear-gradient(160deg,var(--surface-container-low),var(--surface-container))}
+  .sub-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+  .sub-card{background:var(--primary-deep);color:#fff;border-radius:var(--radius);padding:38px 34px;box-shadow:0 24px 60px rgba(6,78,59,.35);position:relative;overflow:hidden}
+  .sub-card::after{content:"";position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(253,138,66,.25),transparent 70%)}
+  .sub-card .price{font-family:'Noto Serif Bengali',serif;font-size:64px;font-weight:700;color:var(--gold-soft);line-height:1;position:relative}
+  .sub-card .price span{font-size:22px;color:#fff;opacity:.85;font-weight:500}
+  .sub-card .plabel{opacity:.85;margin-top:6px;position:relative}
+  .sub-card hr{border:none;border-top:1px solid rgba(255,255,255,.15);margin:24px 0;position:relative}
+  .sub-card ul{list-style:none;display:grid;gap:14px;position:relative}
+  .sub-card li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+  .sub-card li svg{flex-shrink:0;width:20px;height:20px;color:var(--primary-dim);margin-top:2px}
+  .steps{display:grid;gap:18px}
+  .step{display:flex;gap:18px;align-items:flex-start;background:var(--white);border:1px solid var(--outline-variant);border-radius:var(--radius-md);padding:20px 22px}
+  .step .num{flex-shrink:0;width:40px;height:40px;border-radius:12px;background:var(--secondary-container);color:#682c00;display:grid;place-items:center;font-family:'Noto Serif Bengali',serif;font-weight:700;font-size:18px}
+  .step h4{font-family:'Noto Serif Bengali',serif;font-size:18px;color:var(--primary-deep);margin-bottom:3px}
+  .step p{font-size:14.5px;color:var(--on-surface-variant)}
+  .note{margin-top:22px;display:flex;gap:12px;background:var(--error-container);border-radius:var(--radius-md);padding:16px 18px;font-size:14px;color:#5a1512}
+  .note svg{flex-shrink:0;width:20px;height:20px;margin-top:2px}
+
+  /* WHY */
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .wcard{background:var(--white);border:1px solid var(--outline-variant);border-radius:var(--radius);padding:30px 26px}
+  .wcard .emo{font-size:30px;margin-bottom:14px}
+  .wcard h3{font-size:19px;color:var(--primary-deep);margin-bottom:8px}
+  .wcard p{font-size:14.5px;color:var(--on-surface-variant)}
+
+  /* CTA */
+  .cta{background:var(--primary-deep);color:#fff;border-radius:var(--radius);padding:66px 40px;text-align:center;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;top:-120px;left:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(149,211,186,.22),transparent 70%)}
+  .cta::after{content:"";position:absolute;bottom:-120px;right:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(253,138,66,.2),transparent 70%)}
+  .cta h2{font-size:38px;color:#fff;position:relative;margin-bottom:14px}
+  .cta p{position:relative;opacity:.9;max-width:520px;margin:0 auto 28px;font-size:17px}
+  .cta .hero-actions{justify-content:center;position:relative}
+  .cta .btn-ghost{color:#fff;border-color:rgba(255,255,255,.5)}
+  .cta .btn-ghost:hover{background:rgba(255,255,255,.1)}
+
+  /* FOOTER */
+  footer{background:var(--surface-container-high);padding:56px 0 30px;margin-top:0}
+  .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:40px;padding-bottom:34px;border-bottom:1px solid var(--outline-variant)}
+  .foot-grid p{color:var(--on-surface-variant);font-size:14.5px;max-width:340px;margin-top:14px}
+  .foot-col h5{font-family:'Noto Serif Bengali',serif;font-size:16px;color:var(--primary-deep);margin-bottom:16px}
+  .foot-col a{display:block;color:var(--on-surface-variant);font-size:14.5px;margin-bottom:10px}
+  .foot-col a:hover{color:var(--primary)}
+  .foot-bottom{padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--outline);font-size:13.5px}
+  .bd{color:var(--secondary);font-weight:600}
+
+  @media(max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:40px}
+    .phone-wrap{order:-1}
+    .hero h1{font-size:42px}
+    .features,.fgrid3{grid-template-columns:repeat(2,1fr)}
+    .sub-grid{grid-template-columns:1fr;gap:38px}
+    .why{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    .nav-links{display:none}
+    .hero h1{font-size:34px}
+    .hero{padding:48px 0 64px}
+    section.block{padding:60px 0}
+    .sec-head h2{font-size:28px}
+    .features,.fgrid3{grid-template-columns:1fr}
+    .cta h2{font-size:28px}
+    .cta{padding:48px 22px}
+    .foot-grid{grid-template-columns:1fr}
+    .sub-card .price{font-size:52px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg>
+      </span>
+      সালাত টাইম
+    </div>
+    <nav class="nav-links">
+      <a href="#features">ফিচার</a>
+      <a href="#subscription">সাবস্ক্রিপশন</a>
+      <a href="#how">যেভাবে কাজ করে</a>
+      <a href="#why">কেন সালাত টাইম</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="https://drive.google.com/file/d/1LsJF9TBigdQCwmfztZO-RsUWIQFDUiZE/view?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">অ্যাপ ডাউনলোড</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <span class="chip">🇧🇩 বাংলাদেশের জন্য তৈরি</span>
+      <h1>নামাজের <span class="accent">সঠিক সময়</span>, প্রতিদিনের ইবাদতের বিশ্বস্ত সঙ্গী</h1>
+      <p class="lead">সালাত টাইম আপনার শহরের নির্ভুল নামাজের সময়সূচি, পরবর্তী ওয়াক্তের কাউন্টডাউন ও কিবলার দিক নির্দেশ করে — একটি শান্ত, বিজ্ঞাপনমুক্ত পরিবেশে।</p>
+      <div class="hero-actions" id="download">
+        <a href="https://drive.google.com/file/d/1LsJF9TBigdQCwmfztZO-RsUWIQFDUiZE/view?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">অ্যাপ ডাউনলোড করুন</a>
+        <a href="#subscription" class="btn btn-ghost">সাবস্ক্রিপশন সম্পর্কে জানুন</a>
+      </div>
+      <div class="charging">
+        <span class="tk">৳</span>
+        <div>
+          <b>প্রতিদিন মাত্র ২ টাকা</b> (ভ্যাট, এসসি ও এসডি সহ)।
+          <small>সাবস্ক্রিপশন সম্পূর্ণভাবে অ্যাপের ভেতর থেকে পরিচালিত হয় — আপনি চাইলে যেকোনো সময় বন্ধ করতে পারবেন।</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="block" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">ফিচারসমূহ</span>
+      <h2>দৈনন্দিন ইবাদতের জন্য যা প্রয়োজন</h2>
+      <p>নির্ভুল সময়, পরিচ্ছন্ন ডিজাইন এবং বিরক্তিকর বিজ্ঞাপনহীন এক প্রশান্ত অভিজ্ঞতা।</p>
+    </div>
+    <div class="fgrid3">
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>নির্ভুল সময়সূচি</h3>
+        <p>বিশ্বস্ত আল-আজান তথ্যভাণ্ডার থেকে আপনার শহরের সঠিক পাঁচ ওয়াক্তের সময়।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="5"/><path d="M12 9l2 3-2 3"/></svg></div>
+        <h3>কিবলা দিক নির্দেশক</h3>
+        <p>বিল্ট-ইন কম্পাস দিয়ে যেখানেই থাকুন কিবলার সঠিক দিক দেখে নিশ্চিন্তে নামাজ আদায় করুন।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z"/><path d="M9 8h6M9 11h4"/></svg></div>
+        <h3>দোয়ার সংগ্রহ</h3>
+        <p>দৈনন্দিন জীবনের নানা রকম দোয়া — আরবি, উচ্চারণ ও বাংলা অর্থসহ এক জায়গায় সাজানো।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>শহর নির্বাচন</h3>
+        <p>বাংলাদেশের যেকোনো জেলা বা শহর বেছে নিন — অবস্থান অনুযায়ী সময় নির্ধারিত হয়।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></div>
+        <h3>ওয়াক্তের রিমাইন্ডার</h3>
+        <p>পরবর্তী নামাজের কাউন্টডাউন ও মৃদু অ্যালার্ট — কোনো ওয়াক্ত আর মিস হবে না।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-3Z"/></svg></div>
+        <h3>বিজ্ঞাপনমুক্ত পরিবেশ</h3>
+        <p>কোনো বিরক্তিকর বিজ্ঞাপন নেই — পরিচ্ছন্ন, প্রশান্ত পরিবেশে মন দিন শুধু ইবাদতে।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIPTION ACKNOWLEDGEMENT -->
+<section class="block sub" id="subscription">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">সাবস্ক্রিপশন</span>
+      <h2>সাবস্ক্রিপশন যেভাবে কাজ করে</h2>
+      <p>সম্পূর্ণ স্বচ্ছতা — আপনি ঠিক কী পাচ্ছেন এবং কীভাবে চার্জ প্রযোজ্য হয়, তা এখানে পরিষ্কারভাবে দেওয়া হলো।</p>
+    </div>
+
+    <div class="sub-grid">
+      <div class="sub-card">
+        <div class="price">৳২<span> / দিন</span></div>
+        <div class="plabel">ভ্যাট, এসসি ও এসডি সহ দৈনিক চার্জ</div>
+        <hr>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg> সব প্রিমিয়াম ফিচারে সম্পূর্ণ অ্যাক্সেস</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg> কোনো বিজ্ঞাপন নেই, কোনো লুকানো খরচ নেই</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg> যেকোনো সময় সহজে বন্ধ করার সুবিধা</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="steps">
+          <div class="step">
+            <span class="num">১</span>
+            <div>
+              <h4>অ্যাপ থেকে সাবস্ক্রাইব করুন</h4>
+              <p>সাবস্ক্রিপশন সম্পূর্ণভাবে সালাত টাইম অ্যাপের ভেতর থেকে চালু ও পরিচালিত হয় — কোনো আলাদা ওয়েবসাইট বা কার্ড লাগে না।</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">২</span>
+            <div>
+              <h4>প্রতিদিন ২ টাকা চার্জ</h4>
+              <p>সাবস্ক্রিপশন চালু থাকা অবস্থায় আপনার মোবাইল ব্যালেন্স থেকে প্রতিদিন ২ টাকা (ভ্যাট, এসসি ও এসডি সহ) কেটে নেওয়া হবে।</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">৩</span>
+            <div>
+              <h4>যখন খুশি বন্ধ করুন</h4>
+              <p>অ্যাপের সেটিংস থেকে যেকোনো সময় সাবস্ক্রিপশন বন্ধ করা যাবে। বন্ধ করার পর আর কোনো চার্জ কাটা হবে না।</p>
+            </div>
+          </div>
+        </div>
+        <div class="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span><b>স্বীকৃতি:</b> সাবস্ক্রাইব করার মাধ্যমে আপনি সম্মতি দিচ্ছেন যে সাবস্ক্রিপশন সক্রিয় থাকা পর্যন্ত প্রতিদিন ২ টাকা করে চার্জ প্রযোজ্য হবে।</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="block" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">শুরু করুন</span>
+      <h2>তিন ধাপে যাত্রা শুরু</h2>
+      <p>মিনিটের মধ্যেই নামাজের সঠিক সময় হাতের মুঠোয়।</p>
+    </div>
+    <div class="features">
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div>
+        <h3>১ · অ্যাপ ইনস্টল করুন</h3>
+        <p>উপরের লিংক থেকে সালাত টাইম অ্যাপটি ডাউনলোড ও ইনস্টল করুন।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>২ · শহর বেছে নিন</h3>
+        <p>আপনার জেলা বা শহর নির্বাচন করুন, সময়সূচি স্বয়ংক্রিয়ভাবে সাজানো হবে।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>৩ · সময়মতো নামাজ</h3>
+        <p>প্রতি ওয়াক্তের সঠিক সময় ও কাউন্টডাউন দেখে নিশ্চিন্তে ইবাদত করুন।</p>
+      </div>
+      <div class="fcard">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>৪ · প্রিমিয়াম উপভোগ করুন</h3>
+        <p>চাইলে দৈনিক ২ টাকায় সাবস্ক্রাইব করে সব প্রিমিয়াম সুবিধা উপভোগ করুন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="block sub" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">কেন সালাত টাইম</span>
+      <h2>হাজারো মুসল্লির আস্থা</h2>
+      <p>একটি ডিজিটাল প্রশান্তি — যেখানে ইবাদতই মূল, বাকি সব গৌণ।</p>
+    </div>
+    <div class="why">
+      <div class="wcard">
+        <div class="emo">🕌</div>
+        <h3>নির্ভুল ও নির্ভরযোগ্য</h3>
+        <p>স্বীকৃত হিসাব পদ্ধতি অনুসারে প্রতিটি ওয়াক্তের সময় নির্ধারিত, যাতে আপনি নিশ্চিন্ত থাকতে পারেন।</p>
+      </div>
+      <div class="wcard">
+        <div class="emo">🌙</div>
+        <h3>প্রশান্ত ডিজাইন</h3>
+        <p>নরম রং, পরিচ্ছন্ন লেআউট ও বিজ্ঞাপনহীন পরিবেশ — মনকে ইবাদতে নিবিষ্ট রাখে।</p>
+      </div>
+      <div class="wcard">
+        <div class="emo">🔒</div>
+        <h3>স্বচ্ছ ও সৎ</h3>
+        <p>কোনো লুকানো খরচ নেই। খরচ, সাবস্ক্রিপশন ও বাতিলের নিয়ম সবই স্পষ্টভাবে জানানো হয়।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="block">
+  <div class="wrap">
+    <div class="cta">
+      <h2>আজই শুরু করুন সালাত টাইমের সাথে</h2>
+      <p>নামাজের সঠিক সময় হাতের মুঠোয় রাখুন — প্রতিদিন মাত্র ২ টাকায়।</p>
+      <div class="hero-actions">
+        <a href="https://drive.google.com/file/d/1LsJF9TBigdQCwmfztZO-RsUWIQFDUiZE/view?usp=sharing" target="_blank" rel="noopener" class="btn btn-gold">অ্যাপ ডাউনলোড করুন</a>
+        <a href="#subscription" class="btn btn-ghost">সাবস্ক্রিপশন বিস্তারিত</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="color:var(--primary-deep)">
+          <span class="logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg>
+          </span>
+          সালাত টাইম
+        </div>
+        <p>বাংলাদেশের মুসল্লিদের জন্য নামাজের নির্ভুল সময়সূচি ও দৈনিক ইবাদতের বিশ্বস্ত সঙ্গী। শান্ত, পরিচ্ছন্ন ও বিজ্ঞাপনমুক্ত।</p>
+      </div>
+      <div class="foot-col">
+        <h5>দ্রুত লিংক</h5>
+        <a href="#features">ফিচার</a>
+        <a href="#subscription">সাবস্ক্রিপশন</a>
+        <a href="#how">যেভাবে কাজ করে</a>
+        <a href="#why">কেন সালাত টাইম</a>
+      </div>
+      <div class="foot-col">
+        <h5>আইনি তথ্য</h5>
+        <a href="#">গোপনীয়তা নীতি</a>
+        <a href="#">ব্যবহারের শর্তাবলি</a>
+        <a href="#">সাবস্ক্রিপশন নীতি</a>
+        <a href="#">যোগাযোগ</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© ২০২৬ সালাত টাইম। সর্বস্বত্ব সংরক্ষিত।</span>
+      <span class="bd">🇧🇩 বাংলাদেশে তৈরি</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
